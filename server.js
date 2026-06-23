@@ -61,6 +61,7 @@ if (db.lists.length > 0) {
       console.log('📅 作息数据已迁移到新版本');
     }
   }
+}
 
 if (db.lists.length === 0) {
   db.lists = [
