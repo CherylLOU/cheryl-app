@@ -40,16 +40,16 @@ let db = loadDB();
 if (db.lists.length === 0) {
   db.lists = [
     { id: 1, name: '日常作息', color: '#FF9500', sort_order: 0, tasks: [
-      { id: 1, title: '☀️ 起床喝水+伸懒腰', content: '先喝水再伸懒腰30秒。床头放一杯水', priority: 1, due_time: '07:28', repeat_rule: 'Every Day', reminder_time: '07:28', completed: 0, sort_order: 0 },
-      { id: 2, title: '🪥 洗漱+踮脚尖30次', content: '刷牙时顺便踮脚尖30次', priority: 1, due_time: '07:40', repeat_rule: 'Every Day', reminder_time: '07:40', completed: 0, sort_order: 1 },
-      { id: 3, title: '🥚 吃早餐', content: '蛋+豆浆/牛奶+主食选一样', priority: 1, due_time: '07:50', repeat_rule: 'Every Day', reminder_time: '07:50', completed: 0, sort_order: 2 },
+      { id: 1, title: '☀️ 起床喝水', content: '先喝一杯温水', priority: 1, due_time: '08:00', repeat_rule: 'Every Day', reminder_time: '08:00', completed: 0, sort_order: 0 },
+      { id: 2, title: '🪥 洗漱+踮脚尖30次', content: '刷牙时顺便踮脚尖30次', priority: 1, due_time: '08:05', repeat_rule: 'Every Day', reminder_time: '08:05', completed: 0, sort_order: 1 },
+      { id: 3, title: '🥚 吃早餐', content: '蛋+豆浆/牛奶+主食选一样', priority: 1, due_time: '08:10', repeat_rule: 'Every Day', reminder_time: '08:10', completed: 0, sort_order: 2 },
       { id: 4, title: '🍱 午餐（主食减半）', content: '先吃菜和肉→主食只吃一半。饭后散步10分钟', priority: 2, due_time: '12:00', repeat_rule: 'Every Day', reminder_time: '12:00', completed: 0, sort_order: 3 },
-      { id: 5, title: '😴 午休闭眼10分钟', content: '手机扣桌上闭眼休息', priority: 1, due_time: '13:00', repeat_rule: 'Every Day', reminder_time: '13:00', completed: 0, sort_order: 4 },
-      { id: 6, title: '💧 换无糖茶/美式', content: '下午容易困，少喝含糖饮料', priority: 1, due_time: '15:00', repeat_rule: 'Every Day', reminder_time: '15:00', completed: 0, sort_order: 5 },
-      { id: 7, title: '🥜 加餐时间', content: '苹果/一把坚果/一杯酸奶', priority: 1, due_time: '17:00', repeat_rule: 'Every Day', reminder_time: '17:00', completed: 0, sort_order: 6 },
-      { id: 8, title: '🥗 晚餐（七八分饱）', content: '先吃菜和肉，主食只吃一半', priority: 2, due_time: '18:30', repeat_rule: 'Every Day', reminder_time: '18:30', completed: 0, sort_order: 7 },
-      { id: 9, title: '🧘 睡前拉伸5分钟', content: '靠墙站立2分钟+猫式伸展10次+转头左右各5次', priority: 2, due_time: '22:00', repeat_rule: 'Every Day', reminder_time: '22:00', completed: 0, sort_order: 8 },
-      { id: 10, title: '💤 准备睡觉', content: '手机放远，晚安😴', priority: 2, due_time: '23:00', repeat_rule: 'Every Day', reminder_time: '23:00', completed: 0, sort_order: 9 },
+      { id: 5, title: '😴 午休闭眼10分钟', content: '手机扣桌上闭眼休息', priority: 1, due_time: '13:30', repeat_rule: 'Every Day', reminder_time: '13:30', completed: 0, sort_order: 4 },
+      { id: 6, title: '💧 换无糖茶/美式', content: '下午容易困，少喝含糖饮料', priority: 1, due_time: '16:00', repeat_rule: 'Every Day', reminder_time: '16:00', completed: 0, sort_order: 5 },
+      { id: 7, title: '🥜 加餐时间', content: '苹果/一把坚果/一杯酸奶', priority: 1, due_time: '17:30', repeat_rule: 'Every Day', reminder_time: '17:30', completed: 0, sort_order: 6 },
+      { id: 8, title: '🥗 晚餐（七八分饱）', content: '先吃菜和肉，主食只吃一半', priority: 2, due_time: '19:30', repeat_rule: 'Every Day', reminder_time: '19:30', completed: 0, sort_order: 7 },
+      { id: 9, title: '🧘 睡前拉伸3分钟', content: '靠墙站立1分钟+猫式5次+转头各3次', priority: 2, due_time: '00:30', repeat_rule: 'Every Day', reminder_time: '00:30', completed: 0, sort_order: 8 },
+      { id: 10, title: '💤 睡觉时间', content: '晚安😴', priority: 2, due_time: '01:00', repeat_rule: 'Every Day', reminder_time: '01:00', completed: 0, sort_order: 9 },
     ]},
     { id: 2, name: '工作To Do', color: '#4A90D9', sort_order: 1, tasks: [
       { id: 11, title: '📋 整理本周重点工作', content: '本周关键事项推进', priority: 2, due_time: '周一09:00', repeat_rule: 'Every Week on Monday', reminder_time: '周一09:00', completed: 0, sort_order: 0 },
