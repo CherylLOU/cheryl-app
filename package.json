@@ -1,0 +1,17 @@
+{
+  "name": "cheryl-app",
+  "version": "1.0.0",
+  "description": "Cheryl专属日程提醒App",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "CherylLOU",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^4.21.0",
+    "web-push": "^3.6.7"
+  }
+}
