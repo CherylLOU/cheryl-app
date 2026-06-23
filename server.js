@@ -13,10 +13,8 @@ const DATA_DIR = path.join(__dirname, 'data');
 const DB_FILE = path.join(DATA_DIR, 'tasks.json');
 const SUBS_FILE = path.join(DATA_DIR, 'subscriptions.json');
 
-// 确保数据目录存在
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
-// ====== 数据库（JSON文件） ======
 function loadDB() {
   if (!fs.existsSync(DB_FILE)) return { lists: [] };
   try { return JSON.parse(fs.readFileSync(DB_FILE, 'utf8')); }
@@ -35,41 +33,68 @@ function saveSubs(subs) {
   fs.writeFileSync(SUBS_FILE, JSON.stringify(subs), 'utf8');
 }
 
-// ====== 初始化数据 ======
+// 初始化数据
 let db = loadDB();
+
+// 数据迁移：如果云上还有旧作息数据，自动更新到新作息
+if (db.lists.length > 0) {
+  const dailyList = db.lists.find(l => l.id === 1);
+  if (dailyList) {
+    // 用标题检测是否为旧数据，是则更新
+    const oldTask1 = dailyList.tasks.find(t => t.id === 1);
+    if (oldTask1 && oldTask1.title.includes('伸懒腰')) {
+      const newTasks = [
+        { id: 1, title: '☀️ 起床喝水', content: '先喝一杯温水', priority: 1, due_time: '07:30', repeat_rule: 'Every Day', reminder_time: '07:30' },
+        { id: 2, title: '🪥 洗漱+踮脚尖30次', content: '刷牙时顺便踮脚尖30次', priority: 1, due_time: '07:35', repeat_rule: 'Every Day', reminder_time: '07:35' },
+        { id: 3, title: '🥚 吃早餐', content: '蛋+豆浆/牛奶+主食选一样', priority: 1, due_time: '07:45', repeat_rule: 'Every Day', reminder_time: '07:45' },
+        { id: 4, title: '🍱 午餐（主食减半）', content: '先吃菜和肉→主食只吃一半。饭后散步10分钟', priority: 2, due_time: '12:00', repeat_rule: 'Every Day', reminder_time: '12:00' },
+        { id: 5, title: '😴 午休闭眼10分钟', content: '手机扣桌上闭眼休息', priority: 1, due_time: '13:30', repeat_rule: 'Every Day', reminder_time: '13:30' },
+        { id: 6, title: '💧 换无糖茶/美式', content: '下午容易困，少喝含糖饮料', priority: 1, due_time: '16:00', repeat_rule: 'Every Day', reminder_time: '16:00' },
+        { id: 7, title: '🥜 加餐时间', content: '苹果/一把坚果/一杯酸奶', priority: 1, due_time: '17:30', repeat_rule: 'Every Day', reminder_time: '17:30' },
+        { id: 8, title: '🥗 晚餐（七八分饱）', content: '先吃菜和肉，主食只吃一半', priority: 2, due_time: '19:30', repeat_rule: 'Every Day', reminder_time: '19:30' },
+        { id: 9, title: '🧶 钩织时间', content: '钩几针，听播客放松心情', priority: 1, due_time: '00:00', repeat_rule: 'Every Day', reminder_time: '00:00' },
+        { id: 10, title: '🧘 睡前拉伸3分钟', content: '靠墙站立1分钟+猫式5次+转头各3次', priority: 2, due_time: '00:30', repeat_rule: 'Every Day', reminder_time: '00:30' },
+        { id: 11, title: '💤 睡觉', content: '晚安😴', priority: 2, due_time: '01:00', repeat_rule: 'Every Day', reminder_time: '01:00' },
+      ];
+      dailyList.tasks = newTasks.map((t, i) => ({ ...t, completed: 0, sort_order: i }));
+      saveDB(db);
+      console.log('📅 作息数据已迁移到新版本');
+    }
+  }
+
 if (db.lists.length === 0) {
   db.lists = [
     { id: 1, name: '日常作息', color: '#FF9500', sort_order: 0, tasks: [
-      { id: 1, title: '☀️ 起床喝水', content: '先喝一杯温水', priority: 1, due_time: '08:00', repeat_rule: 'Every Day', reminder_time: '08:00', completed: 0, sort_order: 0 },
-      { id: 2, title: '🪥 洗漱+踮脚尖30次', content: '刷牙时顺便踮脚尖30次', priority: 1, due_time: '08:05', repeat_rule: 'Every Day', reminder_time: '08:05', completed: 0, sort_order: 1 },
-      { id: 3, title: '🥚 吃早餐', content: '蛋+豆浆/牛奶+主食选一样', priority: 1, due_time: '08:10', repeat_rule: 'Every Day', reminder_time: '08:10', completed: 0, sort_order: 2 },
+      { id: 1, title: '☀️ 起床喝水', content: '先喝一杯温水', priority: 1, due_time: '07:30', repeat_rule: 'Every Day', reminder_time: '07:30', completed: 0, sort_order: 0 },
+      { id: 2, title: '🪥 洗漱+踮脚尖30次', content: '刷牙时顺便踮脚尖30次', priority: 1, due_time: '07:35', repeat_rule: 'Every Day', reminder_time: '07:35', completed: 0, sort_order: 1 },
+      { id: 3, title: '🥚 吃早餐', content: '蛋+豆浆/牛奶+主食选一样', priority: 1, due_time: '07:45', repeat_rule: 'Every Day', reminder_time: '07:45', completed: 0, sort_order: 2 },
       { id: 4, title: '🍱 午餐（主食减半）', content: '先吃菜和肉→主食只吃一半。饭后散步10分钟', priority: 2, due_time: '12:00', repeat_rule: 'Every Day', reminder_time: '12:00', completed: 0, sort_order: 3 },
       { id: 5, title: '😴 午休闭眼10分钟', content: '手机扣桌上闭眼休息', priority: 1, due_time: '13:30', repeat_rule: 'Every Day', reminder_time: '13:30', completed: 0, sort_order: 4 },
       { id: 6, title: '💧 换无糖茶/美式', content: '下午容易困，少喝含糖饮料', priority: 1, due_time: '16:00', repeat_rule: 'Every Day', reminder_time: '16:00', completed: 0, sort_order: 5 },
       { id: 7, title: '🥜 加餐时间', content: '苹果/一把坚果/一杯酸奶', priority: 1, due_time: '17:30', repeat_rule: 'Every Day', reminder_time: '17:30', completed: 0, sort_order: 6 },
       { id: 8, title: '🥗 晚餐（七八分饱）', content: '先吃菜和肉，主食只吃一半', priority: 2, due_time: '19:30', repeat_rule: 'Every Day', reminder_time: '19:30', completed: 0, sort_order: 7 },
-      { id: 9, title: '🧘 睡前拉伸3分钟', content: '靠墙站立1分钟+猫式5次+转头各3次', priority: 2, due_time: '00:30', repeat_rule: 'Every Day', reminder_time: '00:30', completed: 0, sort_order: 8 },
-      { id: 10, title: '💤 睡觉时间', content: '晚安😴', priority: 2, due_time: '01:00', repeat_rule: 'Every Day', reminder_time: '01:00', completed: 0, sort_order: 9 },
+      { id: 9, title: '🧶 钩织时间', content: '钩几针，听播客放松心情', priority: 1, due_time: '00:00', repeat_rule: 'Every Day', reminder_time: '00:00', completed: 0, sort_order: 8 },
+      { id: 10, title: '🧘 睡前拉伸3分钟', content: '靠墙站立1分钟+猫式5次+转头各3次', priority: 2, due_time: '00:30', repeat_rule: 'Every Day', reminder_time: '00:30', completed: 0, sort_order: 9 },
+      { id: 11, title: '💤 睡觉', content: '晚安😴', priority: 2, due_time: '01:00', repeat_rule: 'Every Day', reminder_time: '01:00', completed: 0, sort_order: 10 },
     ]},
     { id: 2, name: '工作To Do', color: '#4A90D9', sort_order: 1, tasks: [
-      { id: 11, title: '📋 整理本周重点工作', content: '本周关键事项推进', priority: 2, due_time: '周一09:00', repeat_rule: 'Every Week on Monday', reminder_time: '周一09:00', completed: 0, sort_order: 0 },
-      { id: 12, title: '📋 检查各项目进展', content: '团队安排与进展检查', priority: 2, due_time: '周五17:00', repeat_rule: 'Every Week on Friday', reminder_time: '周五17:00', completed: 0, sort_order: 1 },
+      { id: 12, title: '📋 整理本周重点工作', content: '本周关键事项推进', priority: 2, due_time: '周一09:00', repeat_rule: 'Every Week on Monday', reminder_time: '周一09:00', completed: 0, sort_order: 0 },
+      { id: 13, title: '📋 检查各项目进展', content: '团队安排与进展检查', priority: 2, due_time: '周五17:00', repeat_rule: 'Every Week on Friday', reminder_time: '周五17:00', completed: 0, sort_order: 1 },
     ]},
     { id: 3, name: '个人提升', color: '#34C759', sort_order: 2, tasks: [
-      { id: 13, title: '📖 英语学习', content: '碎片时间学习', priority: 1, due_time: '', repeat_rule: '', reminder_time: '', completed: 0, sort_order: 0 },
-      { id: 14, title: '📝 专业输出', content: '写文章/研究报告', priority: 1, due_time: '', repeat_rule: '', reminder_time: '', completed: 0, sort_order: 1 },
+      { id: 14, title: '📖 英语学习', content: '碎片时间学习', priority: 1, due_time: '', repeat_rule: '', reminder_time: '', completed: 0, sort_order: 0 },
+      { id: 15, title: '📝 专业输出', content: '写文章/研究报告', priority: 1, due_time: '', repeat_rule: '', reminder_time: '', completed: 0, sort_order: 1 },
     ]},
   ];
   saveDB(db);
 }
 
-let nextTaskId = 15;
+let nextTaskId = 16;
 let nextListId = 4;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ====== API ======
 app.get('/api/vapid-public-key', (req, res) => res.json({ publicKey: VAPID_PUBLIC_KEY }));
 
 app.post('/api/subscribe', (req, res) => {
@@ -165,7 +190,7 @@ app.delete('/api/lists/:id', (req, res) => {
   res.json({ success: true });
 });
 
-// ====== 后台推送调度器 ======
+// 后台推送调度器
 function checkAndSend() {
   db = loadDB();
   const now = new Date();
@@ -186,9 +211,7 @@ function checkAndSend() {
       else if (!task.repeat_rule) ok = t === task.reminder_time;
       if (ok) {
         const payload = JSON.stringify({ title: task.title, body: task.content || list.name, icon: '/icon-192.svg' });
-        subs.forEach(sub => {
-          webpush.sendNotification(sub, payload).catch(() => {});
-        });
+        subs.forEach(sub => { webpush.sendNotification(sub, payload).catch(() => {}); });
       }
     }
   }
