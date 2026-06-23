@@ -813,7 +813,7 @@
 
     async function subscribeToPush() {
       if (!('serviceWorker' in navigator)) {
-        showToast('⚠️ 此浏览器不支持后台通知');
+        showToast('⚠️ 此浏览器不支持Service Worker');
         return;
       }
 
@@ -825,34 +825,68 @@
           return;
         }
 
-        // 获取VAPID公钥
-        const keyRes = await fetch('/api/vapid-public-key');
-        const { publicKey } = await keyRes.json();
+        showToast('🔔 正在开启推送通知...');
 
-        const registration = await navigator.serviceWorker.ready;
+        // 获取VAPID公钥
+        let keyRes, publicKey;
+        try {
+          keyRes = await fetch('/api/vapid-public-key');
+          const data = await keyRes.json();
+          publicKey = data.publicKey;
+        } catch (e) {
+          showToast('❌ 获取推送密钥失败: ' + e.message);
+          return;
+        }
+
+        // 注册Service Worker
+        let registration;
+        try {
+          registration = await navigator.serviceWorker.ready;
+        } catch (e) {
+          showToast('❌ Service Worker未就绪: ' + e.message);
+          return;
+        }
 
         // 取消旧订阅
-        const oldSub = await registration.pushManager.getSubscription();
-        if (oldSub) await oldSub.unsubscribe();
+        try {
+          const oldSub = await registration.pushManager.getSubscription();
+          if (oldSub) await oldSub.unsubscribe();
+        } catch (_) {}
 
         // 创建新订阅
-        const sub = await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(publicKey)
-        });
+        let sub;
+        try {
+          sub = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(publicKey)
+          });
+        } catch (e) {
+          if (e.code === 20 || e.name === 'AbortError') {
+            showToast('❌ 浏览器不支持推送通知，请将本页面添加到桌面后重试');
+          } else {
+            showToast('❌ 创建推送订阅失败: ' + e.message);
+          }
+          return;
+        }
 
         // 保存到服务器
-        await fetch('/api/subscribe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(sub)
-        });
+        try {
+          const res = await fetch('/api/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(sub)
+          });
+          if (!res.ok) throw new Error('服务器返回 ' + res.status);
+        } catch (e) {
+          showToast('❌ 保存订阅失败: ' + e.message);
+          return;
+        }
 
         pushSubscription = sub;
-        showToast('✅ 后台通知已开启！');
+        showToast('✅ 后台通知已开启！关掉页面也能收到提醒');
       } catch (e) {
         console.error(e);
-        showToast('⚠️ 开启通知失败：' + e.message);
+        showToast('❌ 开启通知失败：' + e.message);
       }
     }
 
