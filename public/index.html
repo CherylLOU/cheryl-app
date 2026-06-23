@@ -821,7 +821,12 @@
         // 请求通知权限
         const perm = await Notification.requestPermission();
         if (perm !== 'granted') {
-          showToast('⚠️ 通知权限被拒绝，请在浏览器设置中允许');
+          showToast('⚠️ Edge浏览器通知被禁止，将引导你开启');
+          // 尝试打开Edge的通知设置页面
+          setTimeout(() => {
+            showToast('📱 请在Edge里: 点右上角… → 设置 → 网站权限 → 通知 → 找到本网站 → 允许');
+          }, 500);
+          document.getElementById('notifToggle').checked = false;
           return;
         }
 
