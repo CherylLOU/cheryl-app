@@ -34,7 +34,7 @@ function saveSubs(subs) {
 }
 
 let db = loadDB();
-let nextTaskId = 16;
+let nextTaskId = 19;
 let nextListId = 4;
 
 // 首次初始化
@@ -58,8 +58,11 @@ if (db.lists.length === 0) {
       { id: 13, title: '📋 检查各项目进展', content: '团队安排与进展检查', priority: 2, due_time: '周五17:00', repeat_rule: 'Every Week on Friday', reminder_time: '周五17:00', completed: 0, sort_order: 1 },
     ]},
     { id: 3, name: '个人提升', color: '#34C759', sort_order: 2, tasks: [
-      { id: 14, title: '📖 英语学习', content: '碎片时间学习', priority: 1, due_time: '', repeat_rule: '', reminder_time: '', completed: 0, sort_order: 0 },
-      { id: 15, title: '📝 专业输出', content: '写文章/研究报告', priority: 1, due_time: '', repeat_rule: '', reminder_time: '', completed: 0, sort_order: 1 },
+      { id: 14, title: '📖 英语阅读', content: '看一段IFRS英文原文，10分钟', priority: 2, due_time: '10:00', repeat_rule: 'Every Weekday', reminder_time: '10:00', completed: 0, sort_order: 0 },
+      { id: 15, title: '🎧 英语听力', content: '通勤/钩织时听英文播客', priority: 1, due_time: '08:30', repeat_rule: 'Every Weekday', reminder_time: '08:30', completed: 0, sort_order: 1 },
+      { id: 16, title: '🎙️ 英语口语练习', content: '用英文说一句工作思考，录音1分钟', priority: 1, due_time: '周五21:00', repeat_rule: 'Every Week on Friday', reminder_time: '周五21:00', completed: 0, sort_order: 2 },
+      { id: 17, title: '📝 专业输出', content: '写一篇文章/研究报告片段', priority: 2, due_time: '周日15:00', repeat_rule: 'Every Week on Sunday', reminder_time: '周日15:00', completed: 0, sort_order: 3 },
+      { id: 18, title: '📚 专业阅读', content: '看一篇行业研究报告或准则更新', priority: 1, due_time: '', repeat_rule: '', reminder_time: '', completed: 0, sort_order: 4 },
     ]},
   ];
   saveDB(db);
