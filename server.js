@@ -33,36 +33,11 @@ function saveSubs(subs) {
   fs.writeFileSync(SUBS_FILE, JSON.stringify(subs), 'utf8');
 }
 
-// 初始化数据
 let db = loadDB();
+let nextTaskId = 16;
+let nextListId = 4;
 
-// 数据迁移：如果云上还有旧作息数据，自动更新到新作息
-if (db.lists.length > 0) {
-  const dailyList = db.lists.find(l => l.id === 1);
-  if (dailyList) {
-    // 用标题检测是否为旧数据，是则更新
-    const oldTask1 = dailyList.tasks.find(t => t.id === 1);
-    if (oldTask1 && oldTask1.title.includes('伸懒腰')) {
-      const newTasks = [
-        { id: 1, title: '☀️ 起床喝水', content: '先喝一杯温水', priority: 1, due_time: '07:30', repeat_rule: 'Every Day', reminder_time: '07:30' },
-        { id: 2, title: '🪥 洗漱+踮脚尖30次', content: '刷牙时顺便踮脚尖30次', priority: 1, due_time: '07:35', repeat_rule: 'Every Day', reminder_time: '07:35' },
-        { id: 3, title: '🥚 吃早餐', content: '蛋+豆浆/牛奶+主食选一样', priority: 1, due_time: '07:45', repeat_rule: 'Every Day', reminder_time: '07:45' },
-        { id: 4, title: '🍱 午餐（主食减半）', content: '先吃菜和肉→主食只吃一半。饭后散步10分钟', priority: 2, due_time: '12:00', repeat_rule: 'Every Day', reminder_time: '12:00' },
-        { id: 5, title: '😴 午休闭眼10分钟', content: '手机扣桌上闭眼休息', priority: 1, due_time: '13:30', repeat_rule: 'Every Day', reminder_time: '13:30' },
-        { id: 6, title: '💧 换无糖茶/美式', content: '下午容易困，少喝含糖饮料', priority: 1, due_time: '16:00', repeat_rule: 'Every Day', reminder_time: '16:00' },
-        { id: 7, title: '🥜 加餐时间', content: '苹果/一把坚果/一杯酸奶', priority: 1, due_time: '17:30', repeat_rule: 'Every Day', reminder_time: '17:30' },
-        { id: 8, title: '🥗 晚餐（七八分饱）', content: '先吃菜和肉，主食只吃一半', priority: 2, due_time: '19:30', repeat_rule: 'Every Day', reminder_time: '19:30' },
-        { id: 9, title: '🧶 钩织时间', content: '钩几针，听播客放松心情', priority: 1, due_time: '00:00', repeat_rule: 'Every Day', reminder_time: '00:00' },
-        { id: 10, title: '🧘 睡前拉伸3分钟', content: '靠墙站立1分钟+猫式5次+转头各3次', priority: 2, due_time: '00:30', repeat_rule: 'Every Day', reminder_time: '00:30' },
-        { id: 11, title: '💤 睡觉', content: '晚安😴', priority: 2, due_time: '01:00', repeat_rule: 'Every Day', reminder_time: '01:00' },
-      ];
-      dailyList.tasks = newTasks.map((t, i) => ({ ...t, completed: 0, sort_order: i }));
-      saveDB(db);
-      console.log('📅 作息数据已迁移到新版本');
-    }
-  }
-}
-
+// 首次初始化
 if (db.lists.length === 0) {
   db.lists = [
     { id: 1, name: '日常作息', color: '#FF9500', sort_order: 0, tasks: [
@@ -72,8 +47,8 @@ if (db.lists.length === 0) {
       { id: 4, title: '🍱 午餐（主食减半）', content: '先吃菜和肉→主食只吃一半。饭后散步10分钟', priority: 2, due_time: '12:00', repeat_rule: 'Every Day', reminder_time: '12:00', completed: 0, sort_order: 3 },
       { id: 5, title: '😴 午休闭眼10分钟', content: '手机扣桌上闭眼休息', priority: 1, due_time: '13:30', repeat_rule: 'Every Day', reminder_time: '13:30', completed: 0, sort_order: 4 },
       { id: 6, title: '💧 换无糖茶/美式', content: '下午容易困，少喝含糖饮料', priority: 1, due_time: '16:00', repeat_rule: 'Every Day', reminder_time: '16:00', completed: 0, sort_order: 5 },
-      { id: 7, title: '🥜 加餐时间', content: '苹果/一把坚果/一杯酸奶', priority: 1, due_time: '17:30', repeat_rule: 'Every Day', reminder_time: '17:30', completed: 0, sort_order: 6 },
-      { id: 8, title: '🥗 晚餐（七八分饱）', content: '先吃菜和肉，主食只吃一半', priority: 2, due_time: '19:30', repeat_rule: 'Every Day', reminder_time: '19:30', completed: 0, sort_order: 7 },
+      { id: 7, title: '🥜 加餐时间', content: '苹果/一把坚果/一杯酸奶', priority: 1, due_time: '15:00', repeat_rule: 'Every Day', reminder_time: '15:00', completed: 0, sort_order: 6 },
+      { id: 8, title: '🥗 晚餐（七八分饱）', content: '先吃菜和肉，主食只吃一半', priority: 2, due_time: '18:30', repeat_rule: 'Every Day', reminder_time: '18:30', completed: 0, sort_order: 7 },
       { id: 9, title: '🧶 钩织时间', content: '钩几针，听播客放松心情', priority: 1, due_time: '00:00', repeat_rule: 'Every Day', reminder_time: '00:00', completed: 0, sort_order: 8 },
       { id: 10, title: '🧘 睡前拉伸3分钟', content: '靠墙站立1分钟+猫式5次+转头各3次', priority: 2, due_time: '00:30', repeat_rule: 'Every Day', reminder_time: '00:30', completed: 0, sort_order: 9 },
       { id: 11, title: '💤 睡觉', content: '晚安😴', priority: 2, due_time: '01:00', repeat_rule: 'Every Day', reminder_time: '01:00', completed: 0, sort_order: 10 },
@@ -89,9 +64,6 @@ if (db.lists.length === 0) {
   ];
   saveDB(db);
 }
-
-let nextTaskId = 16;
-let nextListId = 4;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -119,13 +91,11 @@ app.post('/api/tasks', (req, res) => {
   const list = db.lists.find(l => l.id === list_id);
   if (!list) return res.status(404).json({ error: 'list not found' });
   const task = {
-    id: nextTaskId++,
-    title, content: content || '', priority: priority || 1,
+    id: nextTaskId++, title, content: content || '', priority: priority || 1,
     due_time: due_time || '', repeat_rule: repeat_rule || '', reminder_time: reminder_time || '',
     completed: 0, sort_order: list.tasks.length
   };
-  list.tasks.push(task);
-  saveDB(db);
+  list.tasks.push(task); saveDB(db);
   res.json(task);
 });
 
@@ -133,11 +103,7 @@ app.patch('/api/tasks/:id/toggle', (req, res) => {
   db = loadDB();
   for (const list of db.lists) {
     const task = list.tasks.find(t => t.id === parseInt(req.params.id));
-    if (task) {
-      task.completed = task.completed ? 0 : 1;
-      saveDB(db);
-      return res.json(task);
-    }
+    if (task) { task.completed = task.completed ? 0 : 1; saveDB(db); return res.json(task); }
   }
   res.status(404).json({ error: 'not found' });
 });
@@ -155,8 +121,7 @@ app.put('/api/tasks/:id', (req, res) => {
       if (repeat_rule !== undefined) task.repeat_rule = repeat_rule;
       if (reminder_time !== undefined) task.reminder_time = reminder_time;
       if (completed !== undefined) task.completed = completed;
-      saveDB(db);
-      return res.json(task);
+      saveDB(db); return res.json(task);
     }
   }
   res.status(404).json({ error: 'not found' });
@@ -166,21 +131,15 @@ app.delete('/api/tasks/:id', (req, res) => {
   db = loadDB();
   for (const list of db.lists) {
     const idx = list.tasks.findIndex(t => t.id === parseInt(req.params.id));
-    if (idx !== -1) {
-      list.tasks.splice(idx, 1);
-      saveDB(db);
-      return res.json({ success: true });
-    }
+    if (idx !== -1) { list.tasks.splice(idx, 1); saveDB(db); return res.json({ success: true }); }
   }
   res.status(404).json({ error: 'not found' });
 });
 
 app.post('/api/lists', (req, res) => {
   db = loadDB();
-  const { name, color } = req.body;
-  const list = { id: nextListId++, name, color: color || '#4A90D9', sort_order: db.lists.length, tasks: [] };
-  db.lists.push(list);
-  saveDB(db);
+  const list = { id: nextListId++, name: req.body.name, color: req.body.color || '#4A90D9', sort_order: db.lists.length, tasks: [] };
+  db.lists.push(list); saveDB(db);
   res.json(list);
 });
 
@@ -198,10 +157,8 @@ function checkAndSend() {
   const t = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   const day = now.getDay();
   const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-
   const subs = loadSubs();
   if (subs.length === 0) return;
-
   for (const list of db.lists) {
     for (const task of list.tasks) {
       if (task.completed || !task.reminder_time) continue;
@@ -219,7 +176,6 @@ function checkAndSend() {
 }
 setInterval(checkAndSend, 30000);
 
-// 每天重置每日任务
 setInterval(() => {
   const now = new Date();
   if (now.getHours() === 0 && now.getMinutes() === 0) {
@@ -234,7 +190,4 @@ setInterval(() => {
 }, 60000);
 
 console.log('⏰ 推送调度器已启动');
-
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`✅ Cheryl App running at http://0.0.0.0:${PORT}`);
-});
+app.listen(PORT, '0.0.0.0', () => console.log(`✅ Cheryl App running at http://0.0.0.0:${PORT}`));
