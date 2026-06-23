@@ -45,7 +45,7 @@ if (db.lists.length === 0) {
       { id: 2, title: '🪥 洗漱+踮脚尖30次', content: '刷牙时顺便踮脚尖30次', priority: 1, due_time: '07:35', repeat_rule: 'Every Day', reminder_time: '07:35', completed: 0, sort_order: 1 },
       { id: 3, title: '🥚 吃早餐', content: '蛋+豆浆/牛奶+主食选一样', priority: 1, due_time: '07:45', repeat_rule: 'Every Day', reminder_time: '07:45', completed: 0, sort_order: 2 },
       { id: 4, title: '🍱 午餐（主食减半）', content: '先吃菜和肉→主食只吃一半。饭后散步10分钟', priority: 2, due_time: '12:00', repeat_rule: 'Every Day', reminder_time: '12:00', completed: 0, sort_order: 3 },
-      { id: 5, title: '😴 午休闭眼10分钟', content: '手机扣桌上闭眼休息', priority: 1, due_time: '13:30', repeat_rule: 'Every Day', reminder_time: '13:30', completed: 0, sort_order: 4 },
+      { id: 5, title: '😴 午休闭眼10分钟', content: '手机扣桌上闭眼休息', priority: 1, due_time: '13:00', repeat_rule: 'Every Day', reminder_time: '13:00', completed: 0, sort_order: 4 },
       { id: 6, title: '💧 换无糖茶/美式', content: '下午容易困，少喝含糖饮料', priority: 1, due_time: '16:00', repeat_rule: 'Every Day', reminder_time: '16:00', completed: 0, sort_order: 5 },
       { id: 7, title: '🥜 加餐时间', content: '苹果/一把坚果/一杯酸奶', priority: 1, due_time: '15:00', repeat_rule: 'Every Day', reminder_time: '15:00', completed: 0, sort_order: 6 },
       { id: 8, title: '🥗 晚餐（七八分饱）', content: '先吃菜和肉，主食只吃一半', priority: 2, due_time: '18:30', repeat_rule: 'Every Day', reminder_time: '18:30', completed: 0, sort_order: 7 },
