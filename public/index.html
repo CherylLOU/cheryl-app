@@ -885,8 +885,12 @@
         pushSubscription = sub;
         showToast('✅ 后台通知已开启！关掉页面也能收到提醒');
       } catch (e) {
-        console.error(e);
-        showToast('❌ 开启通知失败：' + e.message);
+        console.error('Push error:', e);
+        let msg = e.message || String(e);
+        if (e.code === 20) msg = '浏览器禁止推送，请添加到桌面后重试';
+        else if (e.name === 'AbortError') msg = '推送被浏览器拦截，请添加到桌面后重试';
+        else if (msg.includes('Registration')) msg = 'Service Worker注册异常，刷新重试';
+        showToast('❌ ' + msg);
       }
     }
 
